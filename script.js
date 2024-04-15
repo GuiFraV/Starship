@@ -10,9 +10,21 @@ const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 
 const sizes = {
-    height: 600,
-    width: 800
+    height: window.innerHeight,
+    width: window.innerWidth
 }
+
+window.addEventListener('resize', () => {
+
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+
+    camera.aspect = sizes.width / sizes.height
+    camera.updateProjectionMatrix()
+
+    renderer.setSizes(sizes.width, sizes.height)
+
+})
 
 const camera = new THREE.PerspectiveCamera(75, sizes.width/sizes.height)
 camera.position.z = 3
