@@ -1,4 +1,8 @@
 import * as THREE from "three"
+import GUI from 'lil-gui'
+
+const gui = new GUI()
+const cubeTweaks = gui.addFolder("Orientation Cube")
 
 const canvas = document.querySelector('canvas.webgl')
 
@@ -8,6 +12,15 @@ const geometry = new THREE.BoxGeometry(1, 1, 1)
 const material = new THREE.MeshBasicMaterial({ color : "blue"})
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
+
+mesh.position.set(1, -0.1, 0)
+
+cubeTweaks.add(mesh.position, "x", -3, 3, 0.01)
+cubeTweaks.add(mesh.position, "y", -3, 3, 0.01)
+cubeTweaks.add(mesh.position, "z", -3, 3, 0.01)
+
+const axesHelper = new THREE.AxesHelper(1)
+scene.add(axesHelper)
 
 const sizes = {
     height: window.innerHeight,
@@ -22,17 +35,30 @@ window.addEventListener('resize', () => {
     camera.aspect = sizes.width / sizes.height
     camera.updateProjectionMatrix()
 
-    renderer.setSizes(sizes.width, sizes.height)
+    renderer.setSize(sizes.width, sizes.height)
 
 })
 
 const camera = new THREE.PerspectiveCamera(75, sizes.width/sizes.height)
-camera.position.z = 3
+camera.position.z = 10
 scene.add(camera)
 
-const renderer = new THREE.WebGLRenderer({
+gui
+    .add(camera.position, 'z')
+    .min(-3)
+    .max(3)
+    .step(0.01)
+    .name("Distance Camera")
+
+
+    const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
 renderer.setSize(sizes.width, sizes.height)
 
-renderer.render(scene,camera)
+function animate(){
+    window.requestAnimationFrame(animate)
+    renderer.render(scene, camera)
+}
+
+animate()
